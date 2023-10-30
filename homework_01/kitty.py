@@ -6,7 +6,7 @@ Created on Sun Oct 22 19:10:45 2023
 @author: sarpaltunel
 """
 
-from cat import Cat
+from homework_01.cat import Cat
 
 cat1 = Cat("Kittosaurus Rex")
 cat2 = Cat("Snowball IX")
