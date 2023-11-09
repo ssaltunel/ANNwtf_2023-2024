@@ -1,0 +1,89 @@
+from sklearn.datasets import load_digits
+import matplotlib.pyplot as plt
+import numpy as np
+import random
+
+# Load the digits dataset
+digits = load_digits()
+
+#dataset description
+#print(digits['DESCR'])
+
+# Extract the data into (input, target) tuples
+data = list(zip(digits.data, digits.target))
+
+#checking
+fig, axes = plt.subplots(1, 10, figsize=(20, 10))
+for ax, (image, label) in zip(axes, data[:10]):
+    ax.imshow(image.reshape(8, 8), cmap='gray')
+    ax.set_title(f'Target: {label}')
+
+print(data[0][0].dtype)
+# Convert each image to float32
+float32_data = [(image.astype(np.float32) / 255, label) for image, label in data]
+new_data = tuple(float32_data)
+# 'float32_data' now contains the images converted to float32
+print(new_data[0][0].dtype)
+
+
+targets = digits.target
+
+universe = [0,1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+mapping = {}
+for x in range(len(universe)):
+    mapping[universe[x]] = x
+
+onehotencode = []
+for i in targets:
+    arr=list(np.zeros(len(universe), dtype = int))
+    arr[mapping[i]] = 1
+    onehotencode.append(arr)
+
+print(digits.target, len(digits.target))
+print("One hot encode", onehotencode)
+
+print(list(range(len(data))))
+
+def shuffle_data(data, minibatch_size):
+    indices = list(range(len(data)))
+    random.shuffle(indices)
+    for i in range(0, len(indices), minibatch_size):
+        excerpt = indices[i:i + minibatch_size]
+        minibatch_inputs = np.array([data[j][0] for j in excerpt])
+        minibatch_targets = np.array([onehotencode[j] for j in excerpt])
+
+    yield minibatch_inputs, minibatch_targets
+
+    return minibatch_inputs
+
+minibatch_size = 10
+minibatches_gen = shuffle_data(new_data, minibatch_size)
+
+
+# Print the minibatches
+for i, (minibatch_inputs, minibatch_targets) in enumerate(minibatches_gen):
+     print(f"Minibatch {i + 1} Inputs Shape: {minibatch_inputs.shape}, Targets Shape: {minibatch_targets.shape}")
+
+
+class Sigmoid():
+
+    def call(self, a):
+
+        minibatch_size, num_units = a.shape
+        arr = np.array([])
+
+        for i in minibatch_inputs:
+            for j in range(num_units):
+                x = 1.0 / (1.0 + np.exp(-[a][i][j][0]))
+                arr.append(x)
+
+        return arr
+    
+num_units = 10
+Sigmoid.call(shuffle_data)
+        
+    
+
+
+    
